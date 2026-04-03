@@ -267,8 +267,7 @@
 
             if(!nick || !tg_uz || !game_id) return tg.showAlert("Заполните бланк!");
 
-            let total = cart.reduce((a, b) => a + b.p, 0); // Исправлено: суммируем цены
-            // (Для теста проверку баланса опустим или добавим позже)
+            let total = cart.reduce((a, b) => a + b.price, 0); // Исправлено b.p на b.price
 
             const payload = {
                 action: "buy",
@@ -281,7 +280,10 @@
             try {
                 await fetch(API_URL, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true' // Исправляет ошибку хоста с ngrok
+                    },
                     body: JSON.stringify(payload)
                 });
                 tg.showAlert("Заказ отправлен! Ожидайте выдачи.");
@@ -331,7 +333,10 @@
                 // Отправка выигрыша админу
                 fetch(API_URL, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true' // Исправляет ошибку хоста с ngrok
+                    },
                     body: JSON.stringify({ action: "spin", win: winName, user_id: tg.initDataUnsafe?.user?.id })
                 });
             }, 5500);
