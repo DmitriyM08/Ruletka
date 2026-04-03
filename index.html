@@ -10,6 +10,7 @@
             --orange: #FF9900;
             --black: #000000;
             --gray: #1b1b1b;
+            --gold: #ffd700;
         }
 
         body {
@@ -21,7 +22,7 @@
             overflow-x: hidden;
         }
 
-        /* Навигация сверху */
+        /* Навигация */
         .nav {
             display: flex;
             justify-content: space-around;
@@ -35,109 +36,44 @@
 
         .nav-item {
             color: white;
-            font-size: 14px;
+            font-size: 12px;
             text-transform: uppercase;
             cursor: pointer;
             font-weight: bold;
         }
 
-        .nav-item.active {
-            color: var(--orange);
-        }
+        .nav-item.active { color: var(--orange); }
 
-        /* Контент секций */
-        .section { display: none; padding: 20px; text-align: center; }
+        .section { display: none; padding: 20px; text-align: center; min-height: 80vh; }
         .section.active { display: block; }
 
-        /* ГЛАВНАЯ СТРАНИЦА */
-        .home-logo {
-            width: 100%;
-            max-width: 400px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #333;
-        }
+        /* ГЛАВНАЯ */
+        .home-logo { width: 100%; max-width: 400px; border-radius: 10px; margin-bottom: 20px; }
+        .main-title { font-size: 28px; color: var(--orange); text-transform: uppercase; }
 
-        .main-title {
-            font-size: 32px;
-            color: var(--orange);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+        /* МАГАЗИН И КОРЗИНА */
+        .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .item-card { background: var(--gray); padding: 15px; border-radius: 10px; border: 1px solid #333; }
+        .price { color: var(--orange); font-weight: bold; margin: 10px 0; }
+        .btn-buy { background: var(--orange); border: none; padding: 8px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        
+        .cart-status { background: #333; padding: 10px; border-radius: 10px; margin-bottom: 15px; display: none; }
+        .btn-confirm { background: #31b545; color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; font-weight: bold; margin-top: 10px; }
 
-        .balance-info {
-            margin-top: 15px;
-            font-size: 18px;
-        }
+        /* КЕЙСЫ */
+        .case-container { position: relative; width: 100%; height: 150px; background: #111; margin: 30px 0; overflow: hidden; border: 2px solid var(--orange); }
+        .pointer { position: absolute; left: 50%; width: 4px; height: 100%; background: var(--orange); z-index: 10; transform: translateX(-50%); }
+        .tape { display: flex; position: absolute; left: 0; transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1); }
+        .tape-item { min-width: 120px; height: 130px; margin: 10px; background: var(--gray); display: flex; align-items: center; justify-content: center; border-bottom: 4px solid #555; font-size: 14px; }
+        
+        /* МОДАЛЬНОЕ ОКНО ВЫИГРЫША */
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--gray); padding: 30px; border: 3px solid var(--orange); z-index: 1000; width: 80%; border-radius: 15px; text-align: center; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; }
 
-        /* МАГАЗИН */
-        .shop-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .item-card {
-            background: var(--gray);
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #333;
-        }
-
-        .item-card:hover { border-color: var(--orange); }
-
-        .price { color: var(--orange); font-weight: bold; margin-top: 10px; }
-
-        /* КЕЙСЫ (CS:GO STYLE) */
-        .case-container {
-            position: relative;
-            width: 100%;
-            height: 150px;
-            background: #111;
-            margin: 30px 0;
-            overflow: hidden;
-            border: 2px solid var(--orange);
-        }
-
-        .pointer {
-            position: absolute;
-            left: 50%;
-            width: 4px;
-            height: 100%;
-            background: var(--orange);
-            z-index: 10;
-            transform: translateX(-50%);
-        }
-
-        .tape {
-            display: flex;
-            position: absolute;
-            left: 0;
-            transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1);
-        }
-
-        .tape-item {
-            min-width: 120px;
-            height: 130px;
-            margin: 10px;
-            background: var(--gray);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            border-bottom: 4px solid #555;
-        }
-
-        .btn-spin {
-            background: var(--orange);
-            color: black;
-            border: none;
-            padding: 15px 40px;
-            font-weight: bold;
-            font-size: 18px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+        /* БАЛАНС / ОПЛАТА */
+        .crypto-btn { background: #0088cc; color: white; text-decoration: none; padding: 15px; display: block; border-radius: 10px; font-weight: bold; margin: 20px 0; }
+        .address-box { background: #222; padding: 15px; border-radius: 5px; border: 1px dashed var(--orange); cursor: pointer; word-break: break-all; font-family: monospace; position: relative; }
+        .copy-hint { font-size: 10px; color: var(--orange); margin-top: 5px; }
 
     </style>
 </head>
@@ -153,10 +89,11 @@
     <div id="home" class="section active">
         <img src="logo.png" alt="PRN PROJECT" class="home-logo">
         <div class="main-title">PRN | PROJECT</div>
-        <div class="balance-info">Баланс: <span style="color:var(--orange)">1500</span> PRN Coins</div>
+        <div style="margin-top:20px;">Твой баланс: <span id="main-balance" style="color:var(--orange)">1500</span> PRN</div>
     </div>
 
     <div id="shop" class="section">
+        <div id="cart-msg" class="cart-status">✅ Товар добавлен в корзину</div>
         <div class="shop-grid" id="shop-content"></div>
     </div>
 
@@ -165,17 +102,39 @@
             <div class="pointer"></div>
             <div class="tape" id="tape"></div>
         </div>
-        <button class="btn-spin" onclick="startSpin()">ОТКРЫТЬ КЕЙС (200 PRN)</button>
+        <button id="spin-btn" class="btn-confirm" style="background:var(--orange); color:black;" onclick="startSpin()">КРУТИТЬ (200 PRN)</button>
     </div>
 
     <div id="balance" class="section">
-        <h1 style="color:var(--orange)">БАЛАНС</h1>
-        <p>Здесь пока ничего нет, мой босс.</p>
+        <h2>ПОПОЛНЕНИЕ</h2>
+        <p>Курс: 0.1$ = 1 PRN</p>
+        <a href="https://t.me/send?start=IV0skmNajSuj" class="crypto-btn">ОПЛАТИТЬ ЧЕРЕЗ CRYPTO BOT</a>
+        <p>ИЛИ ПРЯМОЙ ПЕРЕВОД (TRC20):</p>
+        <div class="address-box" onclick="copyAddr()">
+            TVwEBcpL5nxuvUPxgwWYix7f7WcnWAjttA
+            <div class="copy-hint">Нажми, чтобы скопировать адрес</div>
+        </div>
+    </div>
+
+    <div id="modal-overlay" class="overlay" onclick="closeModals()"></div>
+    <div id="win-modal" class="modal">
+        <h2 style="color:var(--orange)">ВЫИГРЫШ!</h2>
+        <div id="win-item" style="font-size:24px; margin: 20px 0;"></div>
+        <button class="btn-buy" onclick="closeModals()">ЗАБРАТЬ</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+
+        let balance = 1500;
+        let cart = null;
+        let isSpinning = false;
+
+        function updateBalance() {
+            document.getElementById('main-balance').innerText = balance;
+            document.getElementById('coins-nav').innerText = balance; // Если добавим в нави
+        }
 
         function openTab(tabId) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -184,41 +143,95 @@
             event.currentTarget.classList.add('active');
         }
 
-        // Заполнение магазина
+        // Магазин
         const shopContainer = document.getElementById('shop-content');
         for (let i = 1; i <= 20; i++) {
             const price = Math.floor(Math.random() * 1000) + 100;
             shopContainer.innerHTML += `
                 <div class="item-card">
-                    <div style="font-size:40px">📦</div>
+                    <div style="font-size:30px">📦</div>
                     <div>Товар ${i}</div>
                     <div class="price">${price} PRN</div>
+                    <button class="btn-buy" onclick="addToCart('Товар ${i}', ${price})">КУПИТЬ</button>
                 </div>
             `;
         }
 
-        // Логика рулетки
+        function addToCart(name, price) {
+            cart = { name, price };
+            const msg = document.getElementById('cart-msg');
+            msg.innerHTML = `🛒 ${name} в корзине!<br><button class="btn-confirm" onclick="confirmPurchase()">ПОДТВЕРДИТЬ КУПИТЬ ЗА ${price} PRN</button>`;
+            msg.style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function confirmPurchase() {
+            if (balance >= cart.price) {
+                balance -= cart.price;
+                updateBalance();
+                alert(`Успешно куплено: ${cart.name}`);
+                cart = null;
+                document.getElementById('cart-msg').style.display = 'none';
+            } else {
+                alert("Недостаточно коинов!");
+            }
+        }
+
+        // Рулетка
+        const items = ["VIP КАРТА", "500 COINS", "РЕДКИЙ СКИН", "ОБЫЧНЫЙ ЯЩИК", "ГРАНАТА", "НОЖ"];
         const tape = document.getElementById('tape');
-        const items = ["VIP", "Gold", "Skins", "Money", "Box", "Key", "Ammo"];
         
         function fillTape() {
             tape.innerHTML = "";
             for (let i = 0; i < 60; i++) {
-                const randItem = items[Math.floor(Math.random() * items.length)];
-                tape.innerHTML += `<div class="tape-item"><b>${randItem}</b></div>`;
+                const item = items[Math.floor(Math.random() * items.length)];
+                tape.innerHTML += `<div class="tape-item"><b>${item}</b></div>`;
             }
         }
         fillTape();
 
         function startSpin() {
+            if (isSpinning) return;
+            if (balance < 200) return alert("Мало коинов, босс!");
+
+            balance -= 200;
+            updateBalance();
+            isSpinning = true;
+            document.getElementById('spin-btn').disabled = true;
+            document.getElementById('spin-btn').style.opacity = "0.5";
+
             tape.style.transition = "none";
             tape.style.transform = "translateX(0px)";
             
             setTimeout(() => {
-                const stopAt = 3000 + Math.random() * 1000;
+                const stopAt = 2500 + Math.random() * 1000;
                 tape.style.transition = "transform 5s cubic-bezier(0.1, 0, 0.1, 1)";
                 tape.style.transform = `translateX(-${stopAt}px)`;
             }, 50);
+
+            setTimeout(() => {
+                isSpinning = false;
+                document.getElementById('spin-btn').disabled = false;
+                document.getElementById('spin-btn').style.opacity = "1";
+                
+                const winIdx = Math.floor(Math.random() * items.length);
+                const win = items[winIdx];
+                
+                document.getElementById('win-item').innerText = win;
+                document.getElementById('win-modal').style.display = 'block';
+                document.getElementById('modal-overlay').style.display = 'block';
+            }, 5500);
+        }
+
+        function closeModals() {
+            document.getElementById('win-modal').style.display = 'none';
+            document.getElementById('modal-overlay').style.display = 'none';
+        }
+
+        function copyAddr() {
+            const addr = "TVwEBcpL5nxuvUPxgwWYix7f7WcnWAjttA";
+            navigator.clipboard.writeText(addr);
+            tg.showAlert("Адрес скопирован в буфер!");
         }
     </script>
 </body>
