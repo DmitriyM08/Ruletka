@@ -3,121 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PRN Project</title>
+    <title>PRN PROJECT</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --primary: #FF9900; /* Порнхаб-оранжевый */
-            --bg: #000000;
-            --card-bg: rgba(27, 27, 27, 0.9); /* Полупрозрачный фон для карточек */
-            --text: #ffffff;
+            --orange: #FF9900;
+            --black: #000000;
+            --gray: #1b1b1b;
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: var(--bg);
-            /* Ссылка на твой большой арт для фона. Затемняем его на 80% */
-            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('link_to_your_big_art.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed; /* Чтобы фон не скроллился */
-            color: var(--text);
+            font-family: 'Arial Black', sans-serif;
+            background-color: var(--black);
+            color: white;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
         }
 
-        /* Обновленная шапка */
-        .header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 25px 20px;
-            background: linear-gradient(180deg, rgba(34,34,34,0.9) 0%, rgba(0,0,0,1) 100%);
-            border-bottom: 3px solid var(--primary);
-            box-shadow: 0 5px 15px rgba(255, 153, 0, 0.3);
-        }
-
-        .logo-img {
-            width: 100px; /* Размер твоего золотого символа */
-            height: auto;
-            margin-bottom: 10px;
-        }
-
-        .project-title {
-            font-size: 22px;
-            font-weight: bold;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-        }
-
-        .balance {
-            font-size: 16px;
-            color: #ccc;
-            margin-top: 5px;
-        }
-        
-        .coins-count {
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        /* Остальные стили из прошлого кода... (навигация, магазин, кейсы) */
-        
-        /* Немного подправим навигацию, чтобы она гармонировала */
+        /* Навигация сверху */
         .nav {
             display: flex;
             justify-content: space-around;
-            background: rgba(17, 17, 17, 0.9);
+            background: #111;
             padding: 15px 0;
-            border-bottom: 1px solid #333;
+            border-bottom: 2px solid var(--orange);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .nav-item {
-            color: #888;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: bold;
+            color: white;
+            font-size: 14px;
             text-transform: uppercase;
             cursor: pointer;
-            transition: color 0.3s;
+            font-weight: bold;
         }
 
         .nav-item.active {
-            color: var(--primary);
-        }
-        
-        /* Подкрутим стиль карточек магазина */
-        .product-card {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            border: 2px solid #333;
-            transition: transform 0.2s, border-color 0.3s;
+            color: var(--orange);
         }
 
-        .product-card:hover { 
-            border-color: var(--primary); 
-            transform: translateY(-5px);
+        /* Контент секций */
+        .section { display: none; padding: 20px; text-align: center; }
+        .section.active { display: block; }
+
+        /* ГЛАВНАЯ СТРАНИЦА */
+        .home-logo {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+        }
+
+        .main-title {
+            font-size: 32px;
+            color: var(--orange);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .balance-info {
+            margin-top: 15px;
+            font-size: 18px;
+        }
+
+        /* МАГАЗИН */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .item-card {
+            background: var(--gray);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+
+        .item-card:hover { border-color: var(--orange); }
+
+        .price { color: var(--orange); font-weight: bold; margin-top: 10px; }
+
+        /* КЕЙСЫ (CS:GO STYLE) */
+        .case-container {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            background: #111;
+            margin: 30px 0;
+            overflow: hidden;
+            border: 2px solid var(--orange);
+        }
+
+        .pointer {
+            position: absolute;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: var(--orange);
+            z-index: 10;
+            transform: translateX(-50%);
+        }
+
+        .tape {
+            display: flex;
+            position: absolute;
+            left: 0;
+            transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1);
+        }
+
+        .tape-item {
+            min-width: 120px;
+            height: 130px;
+            margin: 10px;
+            background: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-bottom: 4px solid #555;
+        }
+
+        .btn-spin {
+            background: var(--orange);
+            color: black;
+            border: none;
+            padding: 15px 40px;
+            font-weight: bold;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="logo.png" alt="PRN Logo" class="logo-img" onerror="this.style.display='none';">
-        <div class="project-title">PRN | ПРОЕКТ</div>
-        <div class="balance">Баланс: <span class="coins-count" id="coins">1500</span> PRN Coins</div>
+    <div class="nav">
+        <div class="nav-item active" onclick="openTab('home')">ГЛАВНАЯ</div>
+        <div class="nav-item" onclick="openTab('shop')">МАГАЗИН</div>
+        <div class="nav-item" onclick="openTab('cases')">КЕЙСЫ</div>
+        <div class="nav-item" onclick="openTab('balance')">БАЛАНС</div>
     </div>
 
-    <div class="nav">
-        <div class="nav-item active" onclick="openTab('shop')">МАГАЗИН</div>
-        <div class="nav-item" onclick="openTab('cases')">КЕЙСЫ</div>
+    <div id="home" class="section active">
+        <img src="logo.png" alt="PRN PROJECT" class="home-logo">
+        <div class="main-title">PRN | PROJECT</div>
+        <div class="balance-info">Баланс: <span style="color:var(--orange)">1500</span> PRN Coins</div>
     </div>
-    
-    </body>
+
+    <div id="shop" class="section">
+        <div class="shop-grid" id="shop-content"></div>
+    </div>
+
+    <div id="cases" class="section">
+        <div class="case-container">
+            <div class="pointer"></div>
+            <div class="tape" id="tape"></div>
+        </div>
+        <button class="btn-spin" onclick="startSpin()">ОТКРЫТЬ КЕЙС (200 PRN)</button>
+    </div>
+
+    <div id="balance" class="section">
+        <h1 style="color:var(--orange)">БАЛАНС</h1>
+        <p>Здесь пока ничего нет, мой босс.</p>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        function openTab(tabId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Заполнение магазина
+        const shopContainer = document.getElementById('shop-content');
+        for (let i = 1; i <= 20; i++) {
+            const price = Math.floor(Math.random() * 1000) + 100;
+            shopContainer.innerHTML += `
+                <div class="item-card">
+                    <div style="font-size:40px">📦</div>
+                    <div>Товар ${i}</div>
+                    <div class="price">${price} PRN</div>
+                </div>
+            `;
+        }
+
+        // Логика рулетки
+        const tape = document.getElementById('tape');
+        const items = ["VIP", "Gold", "Skins", "Money", "Box", "Key", "Ammo"];
+        
+        function fillTape() {
+            tape.innerHTML = "";
+            for (let i = 0; i < 60; i++) {
+                const randItem = items[Math.floor(Math.random() * items.length)];
+                tape.innerHTML += `<div class="tape-item"><b>${randItem}</b></div>`;
+            }
+        }
+        fillTape();
+
+        function startSpin() {
+            tape.style.transition = "none";
+            tape.style.transform = "translateX(0px)";
+            
+            setTimeout(() => {
+                const stopAt = 3000 + Math.random() * 1000;
+                tape.style.transition = "transform 5s cubic-bezier(0.1, 0, 0.1, 1)";
+                tape.style.transform = `translateX(-${stopAt}px)`;
+            }, 50);
+        }
+    </script>
+</body>
 </html>
