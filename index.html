@@ -7,52 +7,47 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root { --orange: #FF9900; --black: #000; --gray: #1b1b1b; }
-        body { font-family: 'Arial Black', sans-serif; background: var(--black); color: #fff; margin: 0; padding: 0; }
+        body { font-family: 'Arial Black', sans-serif; background: var(--black); color: #fff; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
         
-        /* Фиксированный ID в углу */
         .user-id-badge {
             position: fixed;
-            top: 60px; /* Чуть ниже навигации */
+            top: 70px;
             right: 10px;
-            background: rgba(255, 153, 0, 0.2);
+            background: rgba(0, 0, 0, 0.85);
             border: 1px solid var(--orange);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 10px;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 11px;
             color: var(--orange);
-            z-index: 200;
-            pointer-events: none; /* Чтобы не мешал кликам */
+            z-index: 2000;
+            box-shadow: 0 0 10px rgba(255,153,0,0.3);
         }
 
-        .nav { display: flex; justify-content: space-around; background: #111; padding: 15px 0; border-bottom: 2px solid var(--orange); position: sticky; top: 0; z-index: 100; }
+        .nav { display: flex; justify-content: space-around; background: #111; padding: 15px 0; border-bottom: 2px solid var(--orange); position: sticky; top: 0; z-index: 1500; }
         .nav-item { color: #fff; font-size: 10px; text-transform: uppercase; cursor: pointer; font-weight: bold; }
         .nav-item.active { color: var(--orange); }
 
         .section { display: none; padding: 20px; text-align: center; }
         .section.active { display: block; }
 
-        /* Магазин */
         .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .card { background: var(--gray); padding: 15px; border-radius: 10px; border: 1px solid #333; position: relative; }
-        .btn { background: var(--orange); border: none; padding: 10px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px; transition: 0.3s; }
-        .btn:active { transform: scale(0.95); }
+        .card { background: var(--gray); padding: 15px; border-radius: 12px; border: 1px solid #333; transition: 0.2s; }
+        .card:active { transform: scale(0.96); }
+        .btn { background: var(--orange); border: none; padding: 12px; width: 100%; border-radius: 7px; font-weight: bold; cursor: pointer; color: #000; margin-top: 8px; }
 
-        /* Корзина */
-        .cart-item { background: #222; padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; }
+        .cart-item { background: #222; padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--orange); }
 
-        /* Рулетка */
-        .case-view { position: relative; width: 100%; height: 130px; background: #111; margin: 40px 0 20px 0; overflow: hidden; border: 2px solid var(--orange); }
-        .pointer { position: absolute; left: 50%; width: 4px; height: 100%; background: var(--orange); z-index: 10; transform: translateX(-50%); }
+        .case-view { position: relative; width: 100%; height: 140px; background: #111; margin: 40px 0 20px 0; overflow: hidden; border: 2px solid var(--orange); border-radius: 10px; }
+        .pointer { position: absolute; left: 50%; width: 4px; height: 100%; background: var(--orange); z-index: 10; transform: translateX(-50%); box-shadow: 0 0 15px var(--orange); }
         .tape { display: flex; position: absolute; left: 0; transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1); will-change: transform; }
-        .t-item { min-width: 100px; height: 110px; margin: 10px; background: var(--gray); display: flex; align-items: center; justify-content: center; border-bottom: 3px solid #444; font-size: 12px; }
+        .t-item { min-width: 110px; height: 120px; margin: 10px; background: var(--gray); display: flex; align-items: center; justify-content: center; font-size: 13px; border-radius: 8px; border-bottom: 3px solid #444; }
 
-        /* Модалка */
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--gray); padding: 25px; border: 2px solid var(--orange); z-index: 1000; width: 85%; border-radius: 15px; box-shadow: 0 0 20px var(--orange); }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--gray); padding: 30px; border: 2px solid var(--orange); z-index: 3000; width: 80%; border-radius: 20px; text-align: center; box-shadow: 0 0 30px rgba(0,0,0,1); }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 2500; }
     </style>
 </head>
 <body>
-    <div class="user-id-badge">ВАШ АЙДИ = "<span id="display-id">LOADING...</span>"</div>
+    <div class="user-id-badge">ВАШ АЙДИ = "<span id="display-id">ЗАГРУЗКА...</span>"</div>
 
     <div class="nav">
         <div class="nav-item active" onclick="tab('home')">ГЛАВНАЯ</div>
@@ -63,9 +58,11 @@
     </div>
 
     <div id="home" class="section active">
-        <img src="logo.png" style="width:100%; border-radius:10px;">
-        <h1 style="color:var(--orange)">PRN | PROJECT</h1>
-        <p>Ваш баланс: <span id="b1" style="color:var(--orange)">1500</span> PRN</p>
+        <img src="logo.png" style="width:100%; border-radius:15px; border: 1px solid #333;">
+        <h1 style="color:var(--orange); letter-spacing: 2px;">PRN | PROJECT</h1>
+        <div style="background: var(--gray); padding: 15px; border-radius: 10px;">
+            Ваш баланс: <span id="b1" style="color:var(--orange); font-size: 20px;">1500</span> PRN
+        </div>
     </div>
 
     <div id="shop" class="section">
@@ -73,9 +70,9 @@
     </div>
 
     <div id="cart" class="section">
-        <h2 style="color:var(--orange)">ВАША КОРЗИНА</h2>
+        <h2 style="color:var(--orange)">КОРЗИНА ТОВАРОВ</h2>
         <div id="cart-list"></div>
-        <div id="cart-total" style="margin:20px 0; font-size:18px;"></div>
+        <div id="cart-total" style="margin:20px 0; font-size: 18px; font-weight: bold;"></div>
         <button id="buy-btn" class="btn" style="background:#31b545; color:#fff; display:none;" onclick="checkout()">ПОДТВЕРДИТЬ ПОКУПКУ</button>
     </div>
 
@@ -86,27 +83,44 @@
 
     <div id="balance" class="section">
         <h2 style="color:var(--orange)">ПОПОЛНЕНИЕ</h2>
-        <p>Курс: 0.1$ = 1 PRN</p>
-        <a href="https://t.me/send?start=IV0skmNajSuj" style="color:#0088cc; text-decoration:none; font-size:20px; font-weight:bold;">КРИПТОБОТ</a>
-        <p style="margin-top:20px">USDT TRC20 (нажми для копии):</p>
-        <div style="color:var(--orange); font-size:12px; border: 1px dashed var(--orange); padding: 10px;" onclick="copy()">TVwEBcpL5nxuvUPxgwWYix7f7WcnWAjttA</div>
+        <a href="https://t.me/send?start=IV0skmNajSuj" class="btn" style="text-decoration:none; display:block; background:#0088cc; color:#fff;">ОПЛАТИТЬ ЧЕРЕЗ CRYPTO BOT</a>
+        <p style="margin-top:30px; font-size: 12px; color: #888;">ПРЯМОЙ ПЕРЕВОД USDT TRC20:</p>
+        <div onclick="copy()" style="color:var(--orange); font-size:11px; border:1px dashed var(--orange); padding:15px; background: #111; word-break: break-all;">TVwEBcpL5nxuvUPxgwWYix7f7WcnWAjttA</div>
+        <p style="font-size: 9px; color: var(--orange); margin-top: 5px;">Нажми на адрес, чтобы скопировать</p>
     </div>
 
-    <div id="over" class="overlay" onclick="closeM()"></div>
+    <div id="over" class="overlay"></div>
     <div id="win" class="modal">
-        <h2 id="m-title" style="color:var(--orange)"></h2>
-        <p id="m-text" style="font-size:14px;"></p>
-        <button class="btn" onclick="closeM()">ПОНЯЛ</button>
+        <h2 id="m-title" style="color:var(--orange)">ВНИМАНИЕ</h2>
+        <p id="m-text" style="font-size: 14px; line-height: 1.5;"></p>
+        <button class="btn" onclick="closeM()">ПОНЯЛ, БОСС</button>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp; tg.expand();
-        let bal = 1500; let cart = []; let spinning = false;
-        const items = ["VIP КАРТА", "500 COINS", "РЕДКИЙ СКИН", "ОБЫЧНЫЙ ЯЩИК", "НОЖ"];
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
 
-        // Установка ID
-        const userId = tg.initDataUnsafe?.user?.id || "НЕИЗВЕСТНО";
+        // --- НАСТРОЙКА API (УКАЖИТЕ СВОЙ URL) ---
+        const API_URL = "https://ВАШ-АДРЕС.ngrok-free.app/api/data"; 
+
+        let bal = 1500; let cart = []; let spinning = false;
+        const items = ["VIP СТАТУС", "1000 COINS", "ELITE СКИН", "КЕЙС ЛОЯЛЬНОСТИ", "МЕЧ ПРАВОСУДИЯ"];
+
+        const userId = tg.initDataUnsafe?.user?.id || "DEBUG_USER";
         document.getElementById('display-id').innerText = userId;
+
+        async function sendToBotAPI(payload) {
+            payload.user_id = userId;
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) { console.error("Ошибка API:", e); }
+        }
 
         function tab(t) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -117,8 +131,8 @@
 
         const sCont = document.getElementById('s-cont');
         for(let i=1; i<=20; i++){
-            let p = 100 + (i*50);
-            sCont.innerHTML += `<div class="card">📦<br>Товар ${i}<br><span style="color:var(--orange)">${p} PRN</span><button class="btn" onclick="toCart('Товар ${i}', ${p})">В КОРЗИНУ</button></div>`;
+            let p = 100 + (i*30);
+            sCont.innerHTML += `<div class="card">📦 Товар #${i}<br><span style="color:var(--orange)">${p} PRN</span><button class="btn" onclick="toCart('Товар ${i}', ${p})">В КОРЗИНУ</button></div>`;
         }
 
         function toCart(n, p) {
@@ -130,51 +144,47 @@
         function renderCart() {
             const list = document.getElementById('cart-list');
             list.innerHTML = ""; let total = 0;
-            cart.forEach((it) => {
-                total += it.p;
-                list.innerHTML += `<div class="cart-item"><span>${it.n}</span><span>${it.p} PRN</span></div>`;
-            });
-            document.getElementById('cart-total').innerText = cart.length ? `ИТОГО К СПИСАНИЮ: ${total} PRN` : "КОРЗИНА ПУСТА";
+            cart.forEach(it => { total += it.p; list.innerHTML += `<div class="cart-item"><span>${it.n}</span><span style="color:var(--orange)">${it.p} PRN</span></div>`; });
+            document.getElementById('cart-total').innerText = cart.length ? `ИТОГО: ${total} PRN` : "КОРЗИНА ПУСТА";
             document.getElementById('buy-btn').style.display = cart.length ? 'block' : 'none';
         }
-        setInterval(renderCart, 600);
+        setInterval(renderCart, 500);
 
         function checkout() {
             let total = cart.reduce((a, b) => a + b.p, 0);
-            if(bal < total) return tg.showAlert("Мало коинов, босс!");
+            if(bal < total) return tg.showAlert("Недостаточно PRN коинов!");
+            
             bal -= total; updateB();
-            
-            // Отправляем данные админу
-            tg.sendData(JSON.stringify({action: "buy", items: cart, total: total, user_id: userId}));
-            
-            showM("ГОТОВО!", "Выдача ресурсов в течение часа. Будьте онлайн в игре. Или скоро с вами свяжется администратор.");
+            sendToBotAPI({ action: "buy", items: cart, total: total });
+
+            showM("УСПЕШНО!", "Заказ отправлен администрации. Выдача ресурсов в течение часа. Будьте в игре!");
             cart = []; document.getElementById('c-count').innerText = 0;
         }
 
         const tape = document.getElementById('tape');
         function fill() {
             tape.innerHTML = "";
-            for(let i=0; i<80; i++) tape.innerHTML += `<div class="t-item">${items[Math.floor(Math.random()*items.length)]}</div>`;
+            for(let i=0; i<80; i++) tape.innerHTML += `<div class="t-item"><b>${items[Math.floor(Math.random()*items.length)]}</b></div>`;
         }
         fill();
 
         function spin() {
             if(spinning || bal < 200) return;
             bal -= 200; updateB(); spinning = true;
-            const btn = document.getElementById('s-btn'); btn.disabled = true; btn.style.opacity = 0.5;
+            const btn = document.getElementById('s-btn'); btn.disabled = true; btn.style.opacity = "0.5";
             
             tape.style.transition = "none"; tape.style.transform = "translateX(0)";
             setTimeout(() => {
-                const x = 2000 + Math.random() * 2000;
+                const x = 2500 + Math.random() * 2000;
                 tape.style.transition = "transform 5s cubic-bezier(0.1, 0, 0.1, 1)";
                 tape.style.transform = `translateX(-${x}px)`;
             }, 50);
 
             setTimeout(() => {
-                spinning = false; btn.disabled = false; btn.style.opacity = 1;
+                spinning = false; btn.disabled = false; btn.style.opacity = "1";
                 let win = items[Math.floor(Math.random()*items.length)];
-                showM("ВЫИГРЫШ!", `Вы выбили: ${win}. Админ получил уведомление!`);
-                tg.sendData(JSON.stringify({action: "spin", win: win, user_id: userId}));
+                showM("ВЫИГРЫШ!", win);
+                sendToBotAPI({ action: "spin", win: win });
             }, 5500);
         }
 
@@ -185,8 +195,11 @@
             document.getElementById('win').style.display = 'block';
             document.getElementById('over').style.display = 'block';
         }
-        function closeM() { document.getElementById('win').style.display = 'none'; document.getElementById('over').style.display = 'none'; }
-        function copy() { navigator.clipboard.writeText("TVwEBcpL5nxuvUPxgwWYix7f7WcnWAjttA"); tg.showAlert("Скопировано!"); }
+        function closeM() { 
+            document.getElementById('win').style.display = 'none'; 
+            document.getElementById('over').style.display = 'none'; 
+        }
+        function copy() { navigator.clipboard.writeText("TVwEBcpL5nxuvUPxgwWYix7f7WcnWAjttA"); tg.showAlert("Адрес скопирован!"); }
     </script>
 </body>
 </html>
