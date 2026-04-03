@@ -2,114 +2,122 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roulette Mini App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PRN Project</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --primary: #FF9900; /* Порнхаб-оранжевый */
+            --bg: #000000;
+            --card-bg: rgba(27, 27, 27, 0.9); /* Полупрозрачный фон для карточек */
+            --text: #ffffff;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a;
-            color: white;
+            font-family: 'Arial', sans-serif;
+            background-color: var(--bg);
+            /* Ссылка на твой большой арт для фона. Затемняем его на 80% */
+            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('link_to_your_big_art.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Чтобы фон не скроллился */
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Обновленная шапка */
+        .header {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            padding: 25px 20px;
+            background: linear-gradient(180deg, rgba(34,34,34,0.9) 0%, rgba(0,0,0,1) 100%);
+            border-bottom: 3px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(255, 153, 0, 0.3);
         }
-        .wheel-container {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            border: 5px solid #ffd700;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
-            background: conic-gradient(
-                #ff4b2b 0deg 72deg, 
-                #ff416c 72deg 144deg, 
-                #4facfe 144deg 216deg, 
-                #00f2fe 216deg 288deg, 
-                #feb47b 288deg 360deg
-            );
+
+        .logo-img {
+            width: 100px; /* Размер твоего золотого символа */
+            height: auto;
+            margin-bottom: 10px;
         }
-        .pointer {
-            position: absolute;
-            top: -20px;
-            z-index: 10;
-            width: 0; 
-            height: 0; 
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 30px solid #ffd700;
-        }
-        .prizes-list {
-            margin-top: 30px;
-            text-align: center;
-        }
-        button {
-            margin-top: 20px;
-            padding: 15px 40px;
-            font-size: 18px;
+
+        .project-title {
+            font-size: 22px;
             font-weight: bold;
-            color: #000;
-            background-color: #ffd700;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
         }
-        button:disabled { background-color: #555; cursor: not-allowed; }
+
+        .balance {
+            font-size: 16px;
+            color: #ccc;
+            margin-top: 5px;
+        }
+        
+        .coins-count {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Остальные стили из прошлого кода... (навигация, магазин, кейсы) */
+        
+        /* Немного подправим навигацию, чтобы она гармонировала */
+        .nav {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(17, 17, 17, 0.9);
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .nav-item {
+            color: #888;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        /* Подкрутим стиль карточек магазина */
+        .product-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #333;
+            transition: transform 0.2s, border-color 0.3s;
+        }
+
+        .product-card:hover { 
+            border-color: var(--primary); 
+            transform: translateY(-5px);
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="pointer"></div>
-    <div class="wheel-container" id="wheel">
-        <span style="font-weight: bold; font-size: 20px; text-shadow: 1px 1px 5px #000;">🎁</span>
+    <div class="header">
+        <img src="logo.png" alt="PRN Logo" class="logo-img" onerror="this.style.display='none';">
+        <div class="project-title">PRN | ПРОЕКТ</div>
+        <div class="balance">Баланс: <span class="coins-count" id="coins">1500</span> PRN Coins</div>
     </div>
 
-    <div class="prizes-list">
-        <h2 id="status">Испытай удачу!</h2>
-        <div id="result-text"></div>
+    <div class="nav">
+        <div class="nav-item active" onclick="openTab('shop')">МАГАЗИН</div>
+        <div class="nav-item" onclick="openTab('cases')">КЕЙСЫ</div>
     </div>
-
-    <button id="spin-button" onclick="spin()">КРУТИТЬ</button>
-
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-
-        let canSpin = true;
-        const wheel = document.getElementById('wheel');
-        const status = document.getElementById('status');
-        const prizes = ["Приз 1", "Приз 2", "Приз 3", "Приз 4", "Приз 5"];
-
-        function spin() {
-            if (!canSpin) return;
-            
-            canSpin = false;
-            document.getElementById('spin-button').disabled = true;
-            
-            const randomDegree = Math.floor(Math.random() * 360) + 1800; // Минимум 5 полных кругов
-            wheel.style.transform = `rotate(${randomDegree}deg)`;
-            
-            status.innerText = "Крутим...";
-
-            setTimeout(() => {
-                const actualDegree = randomDegree % 360;
-                const prizeIndex = Math.floor(actualDegree / 72);
-                status.innerText = "Вы выиграли: " + prizes[prizeIndex];
-                
-                // Кнопка закрытия в Telegram появится снизу
-                tg.MainButton.setText("Закрыть рулетку");
-                tg.MainButton.show();
-                tg.MainButton.onClick(() => tg.close());
-            }, 4000);
-        }
-    </script>
-</body>
+    
+    </body>
 </html>
