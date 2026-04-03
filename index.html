@@ -3,349 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PRN PROJECT | OFFICIAL</title>
+    <title>PRN PROJECT</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --orange: #FF9900; --black: #000; --gray: #1b1b1b; --dark-gray: #111; }
+        :root { --orange: #FF9900; --black: #000; --gray: #1b1b1b; }
+        body { font-family: 'Arial Black', sans-serif; background: var(--black); color: #fff; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
         
-        body { 
-            font-family: 'Arial Black', sans-serif; 
-            background: var(--black); 
-            color: #fff; 
-            margin: 0; 
-            padding: 0; 
-            user-select: none; 
-            -webkit-tap-highlight-color: transparent;
+        .user-id-badge {
+            position: fixed;
+            top: 70px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid var(--orange);
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            color: var(--orange);
+            z-index: 2000;
+            box-shadow: 0 0 10px rgba(255,153,0,0.3);
         }
 
-        /* Навигация */
-        .nav { 
-            display: flex; 
-            justify-content: space-around; 
-            background: var(--dark-gray); 
-            padding: 15px 0; 
-            border-bottom: 2px solid var(--orange); 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-        }
-        .nav-item { color: #fff; font-size: 10px; text-transform: uppercase; cursor: pointer; font-weight: bold; opacity: 0.6; transition: 0.3s; }
-        .nav-item.active { color: var(--orange); opacity: 1; transform: scale(1.1); }
+        .nav { display: flex; justify-content: space-around; background: #111; padding: 15px 0; border-bottom: 2px solid var(--orange); position: sticky; top: 0; z-index: 1500; }
+        .nav-item { color: #fff; font-size: 10px; text-transform: uppercase; cursor: pointer; font-weight: bold; }
+        .nav-item.active { color: var(--orange); }
 
-        .section { display: none; padding: 20px; text-align: center; animation: fadeIn 0.3s ease; }
+        .section { display: none; padding: 20px; text-align: center; }
         .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Карточки товаров */
-        .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-        .card { 
-            background: var(--gray); 
-            padding: 15px; 
-            border-radius: 15px; 
-            border: 1px solid #333; 
-            position: relative; 
-            overflow: hidden;
-            transition: 0.2s;
-        }
-        .card:active { transform: scale(0.95); border-color: var(--orange); }
-        
-        .btn { 
-            background: var(--orange); 
-            border: none; 
-            padding: 12px; 
-            width: 100%; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            color: #000; 
-            margin-top: 10px; 
-            font-size: 11px; 
-            text-transform: uppercase;
-        }
+        .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .card { background: var(--gray); padding: 15px; border-radius: 12px; border: 1px solid #333; transition: 0.2s; position: relative; }
+        .card:active { transform: scale(0.96); }
+        .btn { background: var(--orange); border: none; padding: 12px; width: 100%; border-radius: 7px; font-weight: bold; cursor: pointer; color: #000; margin-top: 8px; font-size: 12px; }
 
-        /* Рулетка */
-        .case-container { margin: 40px 0; position: relative; }
-        .case-view { 
-            position: relative; 
-            width: 100%; 
-            height: 120px; 
-            background: var(--dark-gray); 
-            overflow: hidden; 
-            border: 2px solid var(--orange); 
-            border-radius: 12px; 
-        }
-        .pointer { 
-            position: absolute; 
-            left: 50%; 
-            top: 0; 
-            width: 4px; 
-            height: 100%; 
-            background: var(--orange); 
-            z-index: 10; 
-            transform: translateX(-50%); 
-            box-shadow: 0 0 15px var(--orange); 
-        }
+        .cart-item { background: #222; padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--orange); }
+
+        .case-view { position: relative; width: 100%; height: 140px; background: #111; margin: 40px 0 20px 0; overflow: hidden; border: 2px solid var(--orange); border-radius: 10px; }
+        .pointer { position: absolute; left: 50%; width: 4px; height: 100%; background: var(--orange); z-index: 10; transform: translateX(-50%); box-shadow: 0 0 15px var(--orange); }
         .tape { display: flex; position: absolute; left: 0; transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1); will-change: transform; padding-left: 50%; }
-        .t-item { 
-            min-width: 110px; 
-            height: 100px; 
-            margin: 10px; 
-            background: var(--gray); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 10px; 
-            border-radius: 10px; 
-            border-bottom: 3px solid #333;
-            text-align: center;
-        }
+        .t-item { min-width: 110px; max-width: 110px; height: 120px; margin: 10px; background: var(--gray); display: flex; align-items: center; justify-content: center; font-size: 11px; border-radius: 8px; border-bottom: 3px solid #444; word-wrap: break-word; text-align: center; padding: 5px; box-sizing: border-box; }
 
-        /* Модальные окна и Бланк */
-        .modal { 
-            display: none; 
-            position: fixed; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            background: var(--gray); 
-            padding: 25px; 
-            border: 2px solid var(--orange); 
-            z-index: 3000; 
-            width: 85%; 
-            border-radius: 20px; 
-            box-shadow: 0 0 40px #000; 
-        }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2500; }
-        
-        .form-input { 
-            width: 100%; 
-            padding: 12px; 
-            margin: 10px 0; 
-            background: #000; 
-            border: 1px solid #444; 
-            color: #fff; 
-            border-radius: 8px; 
-            box-sizing: border-box; 
-            outline: none;
-        }
-        .form-input:focus { border-color: var(--orange); }
-
-        .balance-badge { background: var(--gray); padding: 15px; border-radius: 12px; border-left: 4px solid var(--orange); margin-bottom: 20px; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--gray); padding: 30px; border: 2px solid var(--orange); z-index: 3000; width: 80%; border-radius: 20px; text-align: center; box-shadow: 0 0 30px rgba(0,0,0,1); }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 2500; }
     </style>
 </head>
 <body>
+    <div class="user-id-badge">ВАШ АЙДИ = "<span id="display-id">ЗАГРУЗКА...</span>"</div>
 
     <div class="nav">
-        <div class="nav-item active" onclick="tab('shop', this)">МАГАЗИН</div>
-        <div class="nav-item" onclick="tab('cases', this)">КЕЙСЫ</div>
-        <div class="nav-item" onclick="tab('cart', this)">КОРЗИНА (<span id="c-count">0</span>)</div>
+        <div class="nav-item active" onclick="tab('home')">ГЛАВНАЯ</div>
+        <div class="nav-item" onclick="tab('shop')">МАГАЗИН</div>
+        <div class="nav-item" onclick="tab('cart')">КОРЗИНА (<span id="c-count">0</span>)</div>
+        <div class="nav-item" onclick="tab('cases')">КЕЙСЫ</div>
+        <div class="nav-item" onclick="tab('balance')">БАЛАНС</div>
     </div>
 
-    <div id="shop" class="section active">
-        <div class="balance-badge">
-            МОЙ БАЛАНС: <span id="balance-val" style="color:var(--orange)">1500</span> PRN
+    <div id="home" class="section active">
+        <img src="logo.png" style="width:100%; border-radius:15px; border: 1px solid #333;">
+        <h1 style="color:var(--orange); letter-spacing: 2px; font-size: 24px; margin: 15px 0;">PRN | PROJECT</h1>
+        <div style="background: var(--gray); padding: 15px; border-radius: 10px;">
+            Ваш баланс: <span id="b1" style="color:var(--orange); font-size: 20px;">1500</span> PRN
         </div>
-        <div class="shop-grid" id="shop-items"></div>
     </div>
 
-    <div id="cases" class="section">
-        <h2 style="color:var(--orange)">РУЛЕТКА УДАЧИ</h2>
-        <div class="case-container">
-            <div class="case-view">
-                <div class="pointer"></div>
-                <div class="tape" id="tape"></div>
-            </div>
-        </div>
-        <button id="spin-btn" class="btn" onclick="spin()">КРУТИТЬ ЗА 200 PRN</button>
+    <div id="shop" class="section">
+        <div class="shop-grid" id="s-cont"></div>
     </div>
 
     <div id="cart" class="section">
-        <h2 style="color:var(--orange)">ВАШ ЗАКАЗ</h2>
+        <h2 style="color:var(--orange); font-size: 18px;">КОРЗИНА ТОВАРОВ</h2>
         <div id="cart-list"></div>
-        <div id="cart-empty" style="margin: 40px 0; color: #555;">ТУТ ПОКА ПУСТО...</div>
-        <div id="cart-summary" style="display:none; margin-top: 20px;">
-            <p>ИТОГО: <span id="total-price" style="color:var(--orange)">0</span> PRN</p>
-            <button class="btn" style="background:#31b545; color:#fff;" onclick="openOrderForm()">ПРИНЯТЬ И ОФОРМИТЬ</button>
-        </div>
+        <div id="cart-total" style="margin:20px 0; font-size: 16px; font-weight: bold;"></div>
+        <button id="buy-btn" class="btn" style="background:#31b545; color:#fff; display:none;" onclick="checkout()">ПОДТВЕРДИТЬ ПОКУПКУ</button>
     </div>
 
-    <div id="order-overlay" class="overlay"></div>
-    <div id="order-modal" class="modal">
-        <h3 style="color:var(--orange); margin-top:0;">БЛАНК ЗАКАЗА</h3>
-        <p style="font-size: 10px; color: #888;">Заполните данные для выдачи товара:</p>
-        <input type="text" id="nick" class="form-input" placeholder="Ник в игре:">
-        <input type="text" id="tg_uz" class="form-input" placeholder="Юз в ТГ:">
-        <input type="text" id="game_id" class="form-input" placeholder="Айди в игре:">
-        <button class="btn" style="background:#31b545; color:#fff;" onclick="confirmOrder()">ОТПРАВИТЬ БОССУ</button>
-        <button class="btn" style="background:#444; color:#fff;" onclick="closeOrderForm()">ОТМЕНА</button>
+    <div id="cases" class="section">
+        <div class="case-view"><div class="pointer"></div><div class="tape" id="tape"></div></div>
+        <button id="s-btn" class="btn" onclick="spin()">КРУТИТЬ (200 PRN)</button>
     </div>
 
-    <div id="win-modal" class="modal">
-        <h2 style="color:var(--orange)">ПОЗДРАВЛЯЕМ!</h2>
-        <p id="win-text"></p>
-        <button class="btn" onclick="closeWinModal()">ПРИНЯТЬ</button>
+    <div id="balance" class="section">
+        <h2 style="color:var(--orange); font-size: 18px;">ПОПОЛНЕНИЕ</h2>
+        <a href="https://t.me/send?start=IV0skmNajSuj" class="btn" style="text-decoration:none; display:block; background:#0088cc; color:#fff;">CRYPTO BOT</a>
+        <p style="margin-top:30px; font-size: 12px; color: #888;">ПРЯМОЙ ПЕРЕВОД USDT TRC20:</p>
+        <div onclick="copy()" style="color:var(--orange); font-size:11px; border:1px dashed var(--orange); padding:15px; background: #111; word-break: break-all; border-radius: 5px;">TVwEBcpL5nxuvUPxgwWYix7f7WcnWAjttA</div>
+        <p style="font-size: 9px; color: var(--orange); margin-top: 5px;">Нажми на адрес, чтобы скопировать</p>
+    </div>
+
+    <div id="over" class="overlay"></div>
+    <div id="win" class="modal">
+        <h2 id="m-title" style="color:var(--orange); font-size: 20px;">ВНИМАНИЕ</h2>
+        <p id="m-text" style="font-size: 14px; line-height: 1.5; margin: 15px 0;"></p>
+        <button class="btn" onclick="closeM()">ПРИНЯТЬ</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        const API_URL = "https://unstampeded-oxygenic-obdulia.ngrok-free.dev/api/data";
-        
-        let balance = 1500;
-        let cart = [];
-        let isSpinning = false;
-        const prizeItems = ["VIP СТАТУС", "1000 COINS", "ELITE СКИН", "КЕЙС ЛОЯЛЬНОСТИ", "МЕЧ ПРАВОСУДИЯ"];
+        tg.expand();
+        tg.ready();
 
-        // Переключение вкладок
-        function tab(name, el) {
+        // АКТУАЛЬНЫЙ АДРЕС NGROK
+        const API_URL = "https://unstampeded-oxygenic-obdulia.ngrok-free.dev/api/data"; 
+
+        let bal = 1500; let cart = []; let spinning = false;
+        const rouletteItems = ["VIP СТАТУС", "1000 COINS", "ELITE СКИН", "КЕЙС ЛОЯЛЬНОСТИ", "МЕЧ ПРАВОСУДИЯ"];
+        const ITEM_WIDTH = 130; 
+
+        const userId = tg.initDataUnsafe?.user?.id || "НЕИЗВЕСТНО";
+        document.getElementById('display-id').innerText = userId;
+
+        async function sendToBotAPI(payload) {
+            payload.user_id = userId;
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) { console.error("Ошибка API:", e); }
+        }
+
+        function tab(t) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(name).classList.add('active');
-            el.classList.add('active');
+            document.getElementById(t).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
-        // Наполнение магазина
-        const shopCont = document.getElementById('shop-items');
-        for(let i=1; i<=8; i++) {
-            let price = 100 * i;
-            shopCont.innerHTML += `
-                <div class="card">
-                    <div style="font-size:30px;">🎁</div>
-                    <b>ТОВАР #${i}</b><br>
-                    <span style="color:var(--orange)">${price} PRN</span>
-                    <button class="btn" onclick="addToCart('Товар #${i}', ${price})">В КОРЗИНУ</button>
-                </div>`;
+        const sCont = document.getElementById('s-cont');
+        for(let i=1; i<=20; i++){
+            let p = 100 + (i*30);
+            sCont.innerHTML += `<div class="card">📦 Товар #${i}<br><span style="color:var(--orange)">${p} PRN</span><button class="btn" onclick="toCart('Товар #${i}', ${p})">В КОРЗИНУ</button></div>`;
         }
 
-        function addToCart(name, price) {
-            cart.push({name, price});
+        function toCart(n, p) {
+            cart.push({n, p});
             document.getElementById('c-count').innerText = cart.length;
-            renderCart();
             tg.HapticFeedback.impactOccurred('medium');
         }
 
         function renderCart() {
             const list = document.getElementById('cart-list');
-            const summary = document.getElementById('cart-summary');
-            const empty = document.getElementById('cart-empty');
-            
-            list.innerHTML = "";
-            let total = 0;
+            list.innerHTML = ""; let total = 0;
+            cart.forEach(it => { total += it.p; list.innerHTML += `<div class="cart-item"><span>${it.n}</span><span style="color:var(--orange)">${it.p} PRN</span></div>`; });
+            document.getElementById('cart-total').innerText = cart.length ? `ИТОГО: ${total} PRN` : "КОРЗИНА ПУСТА";
+            document.getElementById('buy-btn').style.display = cart.length ? 'block' : 'none';
+        }
+        setInterval(renderCart, 500);
 
-            if(cart.length > 0) {
-                empty.style.display = "none";
-                summary.style.display = "block";
-                cart.forEach((item, index) => {
-                    total += item.price;
-                    list.innerHTML += `
-                        <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-                            <span>${item.name}</span>
-                            <span style="color:var(--orange)">${item.price} PRN</span>
-                        </div>`;
-                });
-                document.getElementById('total-price').innerText = total;
-            } else {
-                empty.style.display = "block";
-                summary.style.display = "none";
-            }
+        function checkout() {
+            let total = cart.reduce((a, b) => a + b.p, 0);
+            if(bal < total) return tg.showAlert("Недостаточно PRN коинов!");
+            bal -= total; updateB();
+            sendToBotAPI({ action: "buy", items: cart, total: total });
+            showM("УСПЕШНО!", "Заказ отправлен администрации. Выдача в течение часа.");
+            cart = []; document.getElementById('c-count').innerText = 0;
         }
 
-        // Работа с бланком
-        function openOrderForm() {
-            document.getElementById('order-modal').style.display = 'block';
-            document.getElementById('order-overlay').style.display = 'block';
-        }
-
-        function closeOrderForm() {
-            document.getElementById('order-modal').style.display = 'none';
-            document.getElementById('order-overlay').style.display = 'none';
-        }
-
-        async function confirmOrder() {
-            const nick = document.getElementById('nick').value;
-            const tg_uz = document.getElementById('tg_uz').value;
-            const game_id = document.getElementById('game_id').value;
-
-            if(!nick || !tg_uz || !game_id) return tg.showAlert("Заполните бланк!");
-
-            let total = cart.reduce((a, b) => a + b.price, 0); // Исправлено b.p на b.price
-
-            const payload = {
-                action: "buy",
-                user_id: tg.initDataUnsafe?.user?.id || "DEBUG",
-                items: cart,
-                total: document.getElementById('total-price').innerText,
-                player_data: { nick, tg: tg_uz, game_id }
-            };
-
-            try {
-                await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'ngrok-skip-browser-warning': 'true' // Исправляет ошибку хоста с ngrok
-                    },
-                    body: JSON.stringify(payload)
-                });
-                tg.showAlert("Заказ отправлен! Ожидайте выдачи.");
-                cart = []; renderCart(); document.getElementById('c-count').innerText = 0;
-                closeOrderForm();
-            } catch(e) { tg.showAlert("Ошибка сервера!"); }
-        }
-
-        // Рулетка
         const tape = document.getElementById('tape');
-        function initTape() {
+        function fill() {
             tape.innerHTML = "";
-            for(let i=0; i<80; i++) {
-                let p = prizeItems[Math.floor(Math.random()*prizeItems.length)];
-                tape.innerHTML += `<div class="t-item"><b>${p}</b></div>`;
-            }
+            for(let i=0; i<100; i++) tape.innerHTML += `<div class="t-item"><b>${rouletteItems[Math.floor(Math.random()*rouletteItems.length)]}</b></div>`;
         }
-        initTape();
+        fill();
 
         function spin() {
-            if(isSpinning || balance < 200) return;
-            balance -= 200;
-            document.getElementById('balance-val').innerText = balance;
-            isSpinning = true;
+            if(spinning || bal < 200) return;
+            bal -= 200; updateB(); spinning = true;
+            const btn = document.getElementById('s-btn'); btn.disabled = true;
             
-            const btn = document.getElementById('spin-btn');
-            btn.disabled = true; btn.style.opacity = "0.5";
-
-            tape.style.transition = "none";
-            tape.style.transform = "translateX(0)";
+            tape.style.transition = "none"; tape.style.transform = "translateX(0)";
             
-            const winIdx = 50; 
-            const winName = tape.children[winIdx].innerText;
+            const winIndex = 40 + Math.floor(Math.random() * 20); 
+            const allTapeItems = document.querySelectorAll('#tape .t-item b');
+            const winName = allTapeItems[winIndex].innerText;
+            const stopAtPx = winIndex * ITEM_WIDTH;
 
             setTimeout(() => {
                 tape.style.transition = "transform 5s cubic-bezier(0.1, 0, 0.1, 1)";
-                tape.style.transform = `translateX(-${winIdx * 130}px)`;
+                tape.style.transform = `translateX(-${stopAtPx}px)`;
             }, 50);
 
             setTimeout(() => {
-                isSpinning = false;
-                btn.disabled = false; btn.style.opacity = "1";
-                document.getElementById('win-text').innerText = "Ваш приз: " + winName;
-                document.getElementById('win-modal').style.display = "block";
-                document.getElementById('order-overlay').style.display = "block";
-                
-                // Отправка выигрыша админу
-                fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'ngrok-skip-browser-warning': 'true' // Исправляет ошибку хоста с ngrok
-                    },
-                    body: JSON.stringify({ action: "spin", win: winName, user_id: tg.initDataUnsafe?.user?.id })
-                });
+                spinning = false; btn.disabled = false;
+                showM("ВЫИГРЫШ!", winName);
+                sendToBotAPI({ action: "spin", win: winName });
             }, 5500);
         }
 
-        function closeWinModal() {
-            document.getElementById('win-modal').style.display = "none";
-            document.getElementById('order-overlay').style.display = "none";
+        function updateB() { document.getElementById('b1').innerText = bal; }
+        function showM(t, txt) { 
+            document.getElementById('m-title').innerText = t;
+            document.getElementById('m-text').innerText = txt;
+            document.getElementById('win').style.display = 'block';
+            document.getElementById('over').style.display = 'block';
+            tg.HapticFeedback.notificationOccurred('success');
         }
+        function closeM() { 
+            document.getElementById('win').style.display = 'none'; 
+            document.getElementById('over').style.display = 'none'; 
+        }
+        function copy() { navigator.clipboard.writeText("TVwEBcpL5nxuvUPxgwWYix7f7WcnWAjttA"); tg.showAlert("Адрес скопирован!"); }
     </script>
 </body>
 </html>
